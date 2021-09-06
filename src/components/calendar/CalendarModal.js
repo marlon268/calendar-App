@@ -7,9 +7,9 @@ import Swal from 'sweetalert2';
 import { useDispatch, useSelector } from 'react-redux';
 import { uiCloseModal } from '../../redux/actions/ui';
 import {
-   eventAddNew,
    eventClearActiveEvent,
-   eventUpdated,
+   eventStartAddNew,
+   eventStartUpdate,
 } from '../../redux/actions/events';
 
 const customStyles = {
@@ -104,18 +104,13 @@ export const CalendarModal = () => {
 
       //TODO: realizar grabación
       if (activeEvent) {
-         dispatch(eventUpdated(formValues));
+         dispatch(eventStartUpdate(formValues));
       } else {
-         dispatch(
-            eventAddNew({
-               ...formValues,
-               id: new Date().getTime(),
-               user: {
-                  _id: 1234,
-                  name: 'Marlon',
-               },
-            })
-         );
+         // Eliminamos el array bacio para que el backend no me genere errores
+         if (notes.length < 1) {
+            delete formValues.notes;
+         }
+         dispatch(eventStartAddNew(formValues));
       }
 
       setTitleValid(true);
